@@ -18,7 +18,7 @@ return new class extends Migration
             $table->integer('anio_publicacion');
             $table->string('categoria');
             $table->boolean('disponible')->default(true);
-            $table->timestamps();
+            $table->timestamps();   
         });
     }
 

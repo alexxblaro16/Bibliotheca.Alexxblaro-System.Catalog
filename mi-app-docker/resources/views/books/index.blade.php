@@ -123,74 +123,57 @@
     </div>
 
 <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Buscamos todas las imágenes de portada en la tabla
-            const covers = document.querySelectorAll('.book-cover-list');
+    document.addEventListener('DOMContentLoaded', function() {
+        const covers = document.querySelectorAll('.book-cover-list');
+        
+        // Función con retardo para no saturar las APIs
+        covers.forEach((img, index) => {
+            setTimeout(() => {
+                cargarPortada(img);
+            }, index * 150); // Carga una imagen cada 150ms (escalonado)
+        });
 
-            covers.forEach(img => {
-                // Obtenemos título y autor de los atributos data-
-                const tituloRaw = img.getAttribute('data-title');
-                
-                // Limpiamos el título para las APIs
-                const titulo = tituloRaw.replace(/[^\w\s\u00C0-\u017F]/gi, '').trim();
-                
-                // Identificamos el fallback (el icono que sale por defecto) que está justo después de la img
-                const fallback = img.nextElementSibling;
+        function cargarPortada(img) {
+            const tituloRaw = img.getAttribute('data-title');
+            const autorRaw = img.getAttribute('data-author');
+            const titulo = tituloRaw.replace(/[^\w\s\u00C0-\u017F]/gi, '').trim();
+            const fallback = img.nextElementSibling;
 
-                // Función auxiliar para mostrar la imagen y ocultar el icono suavemente
-                const mostrarImagen = (url) => {
-                    img.src = url;
-                    img.onload = () => {
-                        img.classList.remove('opacity-0');
-                        if (fallback) {
-                            fallback.style.opacity = '0';
-                            setTimeout(() => fallback.style.display = 'none', 300);
-                        }
-                    };
-                };
-
-                // Función auxiliar si falla todo (dejamos el icono por defecto)
-                const mostrarFallo = () => {
+            const mostrarImagen = (url) => {
+                img.src = url;
+                img.onload = () => {
+                    img.classList.remove('opacity-0');
                     if (fallback) {
-                        fallback.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>`;
+                        fallback.style.opacity = '0';
+                        setTimeout(() => fallback.style.display = 'none', 300);
                     }
                 };
+            };
 
-                // PLAN B: Google Books
-                const intentarGoogleBooks = (tituloLimpio) => {
-                    const urlGoogle = `https://www.googleapis.com/books/v1/volumes?q=intitle:${encodeURIComponent(tituloLimpio)}&maxResults=1`;
-                    fetch(urlGoogle)
-                        .then(res => res.json())
-                        .then(data => {
-                            if (data.items && data.items.length > 0 && data.items[0].volumeInfo && data.items[0].volumeInfo.imageLinks) {
-                                let imageUrl = data.items[0].volumeInfo.imageLinks.smallThumbnail || data.items[0].volumeInfo.imageLinks.thumbnail;
-                                imageUrl = imageUrl.replace('http:', 'https:');
-                                mostrarImagen(imageUrl);
-                            } else {
-                                mostrarFallo();
-                            }
-                        })
-                        .catch(() => mostrarFallo());
-                };
-
-                // PLAN A: Open Library
-                const urlOpenLibrary = `https://openlibrary.org/search.json?title=${encodeURIComponent(titulo)}&limit=3`;
-                fetch(urlOpenLibrary)
-                    .then(response => response.json())
-                    .then(data => {
-                        const libroConPortada = data.docs ? data.docs.find(doc => doc.cover_i) : null;
-                        if (libroConPortada) {
-                        
-                            const imageUrl = `https://covers.openlibrary.org/b/id/${libroConPortada.cover_i}-M.jpg`;
-                            mostrarImagen(imageUrl);
-                        } else {
-                            intentarGoogleBooks(titulo);
-                        }
-                    })
-                    .catch(() => intentarGoogleBooks(titulo));
-            });
-        });
-    </script>
-
+            // Intentar primero Open Library (más rápido para listas)
+            fetch(`https://openlibrary.org/search.json?title=${encodeURIComponent(titulo)}&limit=1`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.docs && data.docs.length > 0 && data.docs[0].cover_i) {
+                        mostrarImagen(`https://covers.openlibrary.org/b/id/${data.docs[0].cover_i}-M.jpg`);
+                    } else {
+                        // Si falla Open Library, saltar a Google Books
+                        fetch(`https://www.googleapis.com/books/v1/volumes?q=intitle:${encodeURIComponent(titulo)}+inauthor:${encodeURIComponent(autorRaw)}&maxResults=1`)
+                            .then(res => res.json())
+                            .then(data => {
+                                if (data.items && data.items[0].volumeInfo.imageLinks) {
+                                    let url = data.items[0].volumeInfo.imageLinks.thumbnail.replace('http:', 'https:');
+                                    mostrarImagen(url);
+                                }
+                            });
+                    }
+                })
+                .catch(() => {
+                    // Si hay error de conexión, intentar Google Books como último recurso
+                    console.log("Reintentando con Google Books para: " + titulo);
+                });
+        }
+    });
+</script>
 </body>
 </html>

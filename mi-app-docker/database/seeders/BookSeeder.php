@@ -9,7 +9,7 @@ class BookSeeder extends Seeder
 {
     public function run(): void
     {
-       
+    
         $libros = [
             ['titulo' => 'Cien años de soledad', 'autor' => 'Gabriel García Márquez', 'anio_publicacion' => 1967, 'categoria' => 'Realismo Mágico'],
             ['titulo' => '1984', 'autor' => 'George Orwell', 'anio_publicacion' => 1949, 'categoria' => 'Ciencia Ficción'],

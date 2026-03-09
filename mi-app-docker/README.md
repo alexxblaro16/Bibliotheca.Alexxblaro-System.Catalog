@@ -1,59 +1,63 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+📘 Bibliotheca Alexxblaro // System.Catalog
+⚡ Sobre el Proyecto
+Este repositorio ha sido desarrollado para la asignatura de Back-End I (UDIT). Consiste en un sistema CRUD (Create, Read, Update, Delete) robusto para la gestión de una biblioteca digital. El enfoque principal se ha centrado en la estética Dark Terminal / Minimalista, ofreciendo una experiencia de usuario técnica y elegante.
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+🚀 Características Principales
+Identidad Visual: Branding exclusivo "Bibliotheca Alexxblaro" con logotipo vectorial integrado en la interfaz.
 
-## About Laravel
+Gestión Inteligente de Datos: Arquitectura basada en Modelos, Migraciones, Seeders y Factories para un control total del esquema de datos.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Búsqueda Dinámica: Sistema de filtrado por categorías en tiempo real mediante consultas a la base de datos.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Portadas Automáticas (API Sync): Integración avanzada mediante JavaScript con las APIs de OpenLibrary y Google Books para mostrar la carátula real de los libros sin necesidad de almacenamiento local.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Infraestructura Dockerizada: Entorno de desarrollo aislado y reproducible mediante Docker Compose (contenedores para PHP-FPM, Nginx y MySQL).
 
-## Learning Laravel
+🛠️ Stack Tecnológico
+Framework: Laravel 11 (PHP 8.3)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+Base de Datos: MySQL 8.0
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Estilos: Tailwind CSS (Custom Dark Theme)
 
-## Laravel Sponsors
+Frontend: Blade Templating Engine & Vanilla JS
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Contenedores: Docker Desktop
 
-### Premium Partners
+📥 Instalación y Despliegue Local
+Para poner en marcha el sistema en tu entorno local, sigue estos pasos desde tu terminal:
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+Clonar el repositorio:
 
-## Contributing
+Bash
+git clone https://github.com/alexxblaro16/Bibliotheca.Alexxblaro-System.Catalog.git
+cd Bibliotheca.Alexxblaro-System.Catalog
+Levantar la infraestructura (Docker):
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Bash
+docker-compose up -d
+Configurar dependencias y entorno:
 
-## Code of Conduct
+Bash
+docker exec -it mi-app-docker-laravel.test-1 composer install
+docker exec -it mi-app-docker-laravel.test-1 cp .env.example .env
+docker exec -it mi-app-docker-laravel.test-1 php artisan key:generate
+Migraciones y Generación de Datos (Factories):
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Bash
+docker exec -it mi-app-docker-laravel.test-1 php artisan migrate --seed
+Acceso al sistema:
+Abre tu navegador en: http://localhost:8080/books
 
-## Security Vulnerabilities
+📂 Estructura del Proyecto
+app/Models/Book.php: Definición del modelo de datos.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+database/factories/BookFactory.php: Lógica de generación de datos falsos mediante Faker.
 
-## License
+resources/views/books/: Plantillas Blade con el diseño Dark Terminal.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+public/Imagen_Logo.png: Recurso gráfico de identidad visual.
+
+Desarrollado con ❤️ por: alexxblaro16
+
+Grado en Desarrollo de Software - UDIT

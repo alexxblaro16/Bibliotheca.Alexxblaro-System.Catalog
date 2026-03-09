@@ -180,7 +180,7 @@
                     .then(data => {
                         const libroConPortada = data.docs ? data.docs.find(doc => doc.cover_i) : null;
                         if (libroConPortada) {
-                            // Usamos -M (Medium) porque en la lista las imágenes son pequeñas
+                        
                             const imageUrl = `https://covers.openlibrary.org/b/id/${libroConPortada.cover_i}-M.jpg`;
                             mostrarImagen(imageUrl);
                         } else {

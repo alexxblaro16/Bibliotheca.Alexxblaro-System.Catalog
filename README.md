@@ -68,13 +68,3 @@ public/Imagen_Logo.png: Identidad visual del proyecto.
 Desarrollado por: alexxblaro16
 
 Grado en Desarrollo de Software - UDIT
-
-
----
-
-### 📤 Para subirlo a GitHub ahora:
-Ejecuta estos 3 comandos en tu terminal de VS Code:
-
-1. `git add README.md`
-2. `git commit -m "README final con instrucciones de despliegue"`
-3. `git push`

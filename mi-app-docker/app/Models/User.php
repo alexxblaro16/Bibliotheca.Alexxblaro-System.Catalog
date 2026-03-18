@@ -30,7 +30,7 @@ class User extends Authenticatable
         ];
     }
 
-    // NUEVO: Relación para el sistema de préstamos
+
     public function books(): BelongsToMany
     {
         return $this->belongsToMany(Book::class)

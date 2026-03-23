@@ -29,7 +29,7 @@
         <div class="bg-zinc-950/80 backdrop-blur-xl border border-white/10 rounded-xl p-8 md:p-10">
             <div class="mb-8 border-b border-white/10 pb-6">
                 <h2 class="text-2xl font-semibold text-white">Editar Registro</h2>
-                <p class="text-sm text-zinc-500 mt-1">ID del documento: <span class="font-mono text-zinc-300">{{ $book->titulo }}</span></p>
+                <p class="text-sm text-zinc-500 mt-1">Archivo: <span class="font-mono text-zinc-300">{{ $book->titulo }}</span></p>
             </div>
 
             <form action="{{ route('books.update', $book) }}" method="POST" class="space-y-5">
@@ -43,7 +43,7 @@
 
                 <div>
                     <label class="label-dark">Autor</label>
-                    <input type="text" name="autor" value="{{ $book->autor }}" class="input-dark" required>
+                    <input type="text" name="autor" value="{{ $book->author->name }}" class="input-dark" required>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -52,22 +52,27 @@
                         <input type="number" name="anio_publicacion" value="{{ $book->anio_publicacion }}" class="input-dark" required>
                     </div>
                     <div>
-                        <label class="label-dark">Categoría</label>
-                        <input type="text" name="categoria" value="{{ $book->categoria }}" class="input-dark" required>
+                        <label class="label-dark">Stock disponible</label>
+                        <input type="number" name="stock" value="{{ $book->stock }}" class="input-dark" required>
                     </div>
                 </div>
 
-                <div class="pt-4">
+                <div>
+                    <label class="label-dark">Categoría</label>
+                    <input type="text" name="categoria" value="{{ $book->category->name }}" class="input-dark" required>
+                </div>
+
+                <div class="pt-4 border-t border-white/5">
                     <label class="flex items-center cursor-pointer">
-                        <input type="checkbox" name="disponible" value="1" {{ $book->disponible ? 'checked' : '' }} class="w-4 h-4 rounded border-gray-800 bg-zinc-900 text-blue-500 focus:ring-blue-500/50 focus:ring-offset-0">
+                        <input type="checkbox" name="disponible" value="1" {{ $book->stock > 0 ? 'checked' : '' }} class="w-4 h-4 rounded border-gray-800 bg-zinc-900 text-blue-500 focus:ring-blue-500/50 focus:ring-offset-0">
                         <span class="ml-3 text-sm text-zinc-300">
-                            Marcar como disponible para préstamo
+                            Estado de conexión: Disponible para préstamo
                         </span>
                     </label>
                 </div>
 
-                <button type="submit" class="w-full mt-6 px-4 py-3 bg-zinc-800 text-white font-medium text-sm hover:bg-zinc-700 border border-white/10 transition-colors rounded-md">
-                    Actualizar Información
+                <button type="submit" class="w-full mt-6 px-4 py-3 bg-zinc-800 text-white font-medium text-sm hover:bg-zinc-700 border border-white/10 transition-colors rounded-md shadow-[0_0_15px_rgba(0,0,0,0.5)]">
+                    Actualizar Información en la Red
                 </button>
             </form>
         </div>

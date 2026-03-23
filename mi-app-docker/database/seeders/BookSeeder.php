@@ -4,12 +4,14 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Book;
+use App\Models\Author;
+use App\Models\Category;
+use Illuminate\Support\Str;
 
 class BookSeeder extends Seeder
 {
     public function run(): void
     {
-    
         $libros = [
             ['titulo' => 'Cien años de soledad', 'autor' => 'Gabriel García Márquez', 'anio_publicacion' => 1967, 'categoria' => 'Realismo Mágico'],
             ['titulo' => '1984', 'autor' => 'George Orwell', 'anio_publicacion' => 1949, 'categoria' => 'Ciencia Ficción'],
@@ -28,18 +30,24 @@ class BookSeeder extends Seeder
             ['titulo' => 'La sombra del viento', 'autor' => 'Carlos Ruiz Zafón', 'anio_publicacion' => 2001, 'categoria' => 'Misterio'],
         ];
 
-        
         foreach ($libros as $libro) {
-            Book::factory()->create([
+            // 1. Buscamos o creamos el Autor (para tener su ID)
+            $author = Author::firstOrCreate(['name' => $libro['autor']]);
+
+            // 2. Buscamos o creamos la Categoría (para tener su ID)
+            $category = Category::firstOrCreate(
+                ['name' => $libro['categoria']],
+                ['slug' => Str::slug($libro['categoria'])]
+            );
+
+            // 3. Creamos el libro usando los author_id y category_id
+            Book::create([
                 'titulo' => $libro['titulo'],
-                'autor' => $libro['autor'],
+                'author_id' => $author->id,
+                'category_id' => $category->id,
                 'anio_publicacion' => $libro['anio_publicacion'],
-                'categoria' => $libro['categoria'],
-                'disponible' => (bool) rand(0, 1),
+                'stock' => rand(1, 10), // Asignamos un stock aleatorio
             ]);
         }
-
-        
-        Book::factory()->count(5)->create();
     }
 }

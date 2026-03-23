@@ -2,49 +2,53 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use App\Models\Book;
+use App\Models\Category;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
-class BorrowBookController extends Controller
+class BookController extends Controller
 {
     /**
-     * Registra el préstamo de un libro (Misión: Reserva de ejemplar)
+     * Muestra el catálogo principal con filtros de categoría.
      */
-    public function store(Request $request, $user_id, $book_id)
+    public function index(Request $request)
     {
-        // 1. Localizar los datos en la red (Base de Datos)
-        $user = User::findOrFail($user_id);
-        $book = Book::findOrFail($book_id);
+        $query = Book::with(['author', 'category']);
 
-        // 2. Lógica Anti-Duplicados: Verificar si ya tiene este libro activo
-        if ($user->books()->where('book_id', $book_id)->whereNull('returned_at')->exists()) {
-            return redirect()->back()->with('error', 'Acceso denegado: El ejemplar ya está en tu inventario.');
+        // Filtro por categoría si se recibe en la URL
+        if ($request->has('categoria') && $request->categoria != '') {
+            $query->whereHas('category', function($q) use ($request) {
+                $q->where('name', $request->categoria);
+            });
         }
 
-        // 3. Ejecutar vinculación en la tabla pivote
-        // Nota: Asegúrate de tener 'reserved_at' en tu migración de la tabla intermedia
-        $user->books()->attach($book->id, [
-            'reserved_at' => now(),
-            'status' => 'active' 
-        ]);
+        $books = $query->get();
+        $categorias = Category::pluck('name');
 
-        return redirect()->route('books.index')
-            ->with('status', "Protocolo aceptado: {$book->title} ha sido vinculado a {$user->name}.");
+        return view('books.index', compact('books', 'categorias'));
     }
 
     /**
-     * Listado de libros vinculados al usuario (Terminal View)
+     * Muestra la ficha detallada de un libro.
      */
-    public function index($user_id)
+    public function show(Book $book)
     {
-        $user = User::with('books')->findOrFail($user_id);
+        return view('books.show', compact('book'));
+    }
 
-        // En lugar de usar 'echo', enviamos los datos a una vista Cyberpunk
-        return view('books.user_inventory', [
-            'user' => $user,
-            'books' => $user->books
-        ]);
+    /**
+     * Formulario para crear un nuevo registro.
+     */
+    public function create()
+    {
+        return view('books.create');
+    }
+
+    /**
+     * Formulario para editar un registro existente.
+     */
+    public function edit(Book $book)
+    {
+        return view('books.edit', compact('book'));
     }
 }
